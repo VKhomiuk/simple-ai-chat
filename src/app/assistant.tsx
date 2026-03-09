@@ -10,6 +10,7 @@ import { Thread } from "@/components/assistant-ui/thread";
 import { MODELS } from "@/components/model-selector";
 import { ModelProvider } from "@/components/model-context";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { customAttachmentAdapter } from "@/lib/attachment-adapter";
 
 export const Assistant = () => {
   const [selectedModel, setSelectedModel] = useState(MODELS[0].id);
@@ -23,7 +24,12 @@ export const Assistant = () => {
     [selectedModel],
   );
 
-  const runtime = useChatRuntime({ transport });
+  const runtime = useChatRuntime({
+    transport,
+    adapters: {
+      attachments: customAttachmentAdapter,
+    },
+  });
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
