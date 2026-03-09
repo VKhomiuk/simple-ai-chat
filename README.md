@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Chat Interface
+
+A modern, full-featured AI chat interface built with **Next.js 16**, **Vercel AI SDK v6**, and the **Claude API** (Anthropic). The app supports real-time streaming responses, rich Markdown rendering with syntax-highlighted code blocks, file and image uploads for multimodal conversations, and automatic dark mode.
+
+## Features
+
+- **Streaming responses** — real-time token-by-token output from Claude via Server-Sent Events
+- **Markdown rendering** — full GitHub Flavored Markdown (GFM) support including tables, task lists, blockquotes, and headings
+- **Syntax highlighting** — code blocks with language detection, one-dark theme, and a one-click copy button
+- **File uploads** — attach images, PDFs, and text-based files for Claude to analyze (up to 20 MB per file)
+- **Image analysis** — send images (PNG, JPEG, GIF, WebP) and ask Claude to describe or reason about them
+- **Stop generation** — cancel an in-progress response at any time
+- **Dark mode** — automatic system preference detection with custom scrollbar styling
+- **Responsive UI** — clean, modern design that works on desktop and mobile
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- An [Anthropic API key](https://console.anthropic.com/)
+
+### Installation
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create a `.env.local` file in the project root with your Anthropic API key:
+
+```
+ANTHROPIC_API_KEY=your_key_here
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── api/chat/route.ts        # POST endpoint — streams Claude responses
+│   ├── globals.css               # Tailwind imports + custom scrollbar/dark mode styles
+│   ├── layout.tsx                # Root layout with Geist font
+│   └── page.tsx                  # Renders the <Chat /> component
+├── components/
+│   ├── chat.tsx                  # Main chat UI — input, messages list, file attach
+│   ├── chat-message.tsx          # Single message bubble (user / assistant)
+│   ├── file-upload.tsx           # File picker + preview chips with remove button
+│   └── markdown-renderer.tsx     # react-markdown with custom component overrides
+└── lib/
+    └── utils.ts                  # cn() helper (clsx + tailwind-merge)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Supported File Types
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Category | Types |
+|----------|-------|
+| Images | PNG, JPEG, GIF, WebP |
+| Documents | PDF |
+| Text | Plain text, CSV, HTML, Markdown, JSON |
 
-## Deploy on Vercel
+Max file size: **20 MB**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `ANTHROPIC_API_KEY` | Yes | Your Anthropic API key from [console.anthropic.com](https://console.anthropic.com/) |
+
+## Tech Stack
+
+- **Next.js 16** — App Router, React Server Components
+- **Vercel AI SDK v6** — `@ai-sdk/anthropic` provider + `@ai-sdk/react` hooks
+- **Claude Sonnet** — Anthropic's `claude-sonnet-4-20250514` model
+- **Tailwind CSS v4** — utility-first styling
+- **react-markdown** + **remark-gfm** — Markdown rendering with GFM extensions
+- **react-syntax-highlighter** — Prism-based code block highlighting
+- **lucide-react** — icon library
+
+## License
+
+MIT
