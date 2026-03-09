@@ -64,16 +64,33 @@ function uiMessagesToModelMessages(messages: UIMessage[]): ModelMessage[] {
     }) as ModelMessage[];
 }
 
+const ALLOWED_MODELS = [
+  "claude-sonnet-4-6",
+  "claude-opus-4-6",
+  "claude-opus-4-5-20251101",
+  "claude-haiku-4-5-20251001",
+  "claude-sonnet-4-5-20250929",
+  "claude-opus-4-1-20250805",
+  "claude-opus-4-20250514",
+  "claude-sonnet-4-20250514",
+];
+
 export async function POST(req: Request) {
   try {
-    const { messages } = (await req.json()) as {
+    const { messages, model: requestedModel } = (await req.json()) as {
       messages: UIMessage[];
+      model?: string;
     };
+
+    const modelId =
+      requestedModel && ALLOWED_MODELS.includes(requestedModel)
+        ? requestedModel
+        : "claude-sonnet-4-6";
 
     const modelMessages = uiMessagesToModelMessages(messages);
 
     const result = streamText({
-      model: anthropic("claude-sonnet-4-20250514"),
+      model: anthropic(modelId),
       system:
         "You are a helpful AI assistant. You provide clear, accurate, and well-formatted responses using Markdown when appropriate. You can analyze images and files that users share with you.",
       messages: modelMessages,
